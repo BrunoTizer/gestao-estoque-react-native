@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Card from "../../components/Card";
+import { Colors } from "../../constants/Colors";
 
 const PRODUTOS_KEY = "@produtos";
 
@@ -54,20 +55,22 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+    backgroundColor: Colors.background,
   },
   title: {
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 10,
+    color: Colors.textPrimary,
   },
   refreshButton: {
-    backgroundColor: "#4CAF50",
+    backgroundColor: Colors.secondary,
     padding: 10,
     borderRadius: 8,
     marginBottom: 20,
   },
   refreshText: {
-    color: "#fff",
+    color: Colors.white,
     textAlign: "center",
     fontSize: 16,
   },
@@ -75,20 +78,21 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 5,
+    color: Colors.textPrimary,
   },
   codigo: {
     fontSize: 14,
-    color: "#666",
+    color: Colors.textSecondary,
     marginBottom: 5,
   },
   quantidade: {
     fontSize: 16,
-    color: "#2196F3",
+    color: Colors.success,
     fontWeight: "600",
     marginBottom: 5,
   },
   data: {
     fontSize: 12,
-    color: "#999",
+    color: Colors.textSecondary,
   },
 });

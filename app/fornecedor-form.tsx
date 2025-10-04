@@ -4,6 +4,7 @@ import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import Button from "../components/Button";
 import Input from "../components/Input";
+import { Colors } from "../constants/Colors";
 
 const FORNECEDORES_KEY = "@fornecedores";
 
@@ -76,6 +77,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: Colors.background,
   },
 });

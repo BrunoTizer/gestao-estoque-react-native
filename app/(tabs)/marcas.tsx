@@ -3,6 +3,7 @@ import { Link } from "expo-router";
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Card from "../../components/Card";
+import { Colors } from "../../constants/Colors";
 
 const MARCAS_KEY = "@marcas";
 
@@ -47,23 +48,24 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+    backgroundColor: Colors.background,
   },
   link: {
-    backgroundColor: "#FF9800",
-    color: "#fff",
+    backgroundColor: Colors.primary,
+    color: Colors.white,
     padding: 15,
     borderRadius: 8,
     textAlign: "center",
     marginBottom: 10,
   },
   refreshButton: {
-    backgroundColor: "#4CAF50",
+    backgroundColor: Colors.secondary,
     padding: 10,
     borderRadius: 8,
     marginBottom: 20,
   },
   refreshText: {
-    color: "#fff",
+    color: Colors.white,
     textAlign: "center",
     fontSize: 16,
   },
@@ -71,9 +73,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 5,
+    color: Colors.textPrimary,
   },
   status: {
     fontSize: 14,
-    color: "#666",
+    color: Colors.textSecondary,
   },
 });

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 import Button from "../components/Button";
 import Input from "../components/Input";
+import { Colors } from "../constants/Colors";
 
 const PRODUTOS_KEY = "@produtos";
 
@@ -55,7 +56,7 @@ const ProdutoFormScreen = () => {
         keyboardType="numeric"
       />
 
-      <Button title="Salvar Produto" onPress={handleSubmit} color="#2196F3" />
+      <Button title="Salvar Produto" onPress={handleSubmit} />
     </View>
   );
 };
@@ -66,6 +67,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: Colors.background,
   },
 });

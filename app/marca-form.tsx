@@ -4,6 +4,7 @@ import { useState } from "react";
 import { StyleSheet, Switch, Text, View } from "react-native";
 import Button from "../components/Button";
 import Input from "../components/Input";
+import { Colors } from "../constants/Colors";
 
 const MARCAS_KEY = "@marcas";
 
@@ -48,7 +49,7 @@ const MarcaFormScreen = () => {
         <Switch value={ativo} onValueChange={setAtivo} />
       </View>
 
-      <Button title="Salvar Marca" onPress={handleSubmit} color="#FF9800" />
+      <Button title="Salvar Marca" onPress={handleSubmit} />
     </View>
   );
 };
@@ -59,7 +60,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: Colors.background,
   },
   switchContainer: {
     flexDirection: "row",
@@ -67,12 +68,15 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginTop: 15,
     marginBottom: 30,
-    backgroundColor: "#fff",
+    backgroundColor: Colors.white,
     padding: 15,
     borderRadius: 8,
+    borderWidth: 1,
+    borderColor: Colors.border,
   },
   label: {
     fontSize: 16,
     fontWeight: "600",
+    color: Colors.textPrimary,
   },
 });

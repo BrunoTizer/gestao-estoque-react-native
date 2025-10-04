@@ -1,4 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import { Colors } from "../constants/Colors";
 
 type ButtonProps = {
   title: string;
@@ -6,7 +7,7 @@ type ButtonProps = {
   color?: string;
 };
 
-const Button = ({ title, onPress, color = "#4CAF50" }: ButtonProps) => {
+const Button = ({ title, onPress, color = Colors.primary }: ButtonProps) => {
   return (
     <TouchableOpacity
       style={[styles.button, { backgroundColor: color }]}
@@ -26,7 +27,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   text: {
-    color: "#fff",
+    color: Colors.white,
     fontSize: 18,
     fontWeight: "bold",
     textAlign: "center",

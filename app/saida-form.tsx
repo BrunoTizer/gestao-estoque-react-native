@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Button from "../components/Button";
 import Input from "../components/Input";
+import { Colors } from "../constants/Colors";
 
 const PRODUTOS_KEY = "@produtos";
 const SAIDAS_KEY = "@saidas";
@@ -101,7 +102,7 @@ const SaidaFormScreen = () => {
         keyboardType="numeric"
       />
 
-      <Button title="Registrar Saída" onPress={handleSubmit} color="#f44336" />
+      <Button title="Registrar Saída" onPress={handleSubmit} color={Colors.danger} />
     </View>
   );
 };
@@ -112,22 +113,24 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: Colors.background,
   },
   label: {
     fontSize: 16,
     fontWeight: "600",
     marginTop: 15,
     marginBottom: 5,
+    color: Colors.textPrimary,
   },
   pickerContainer: {
-    backgroundColor: "#fff",
+    backgroundColor: Colors.white,
     borderWidth: 1,
-    borderColor: "#ddd",
+    borderColor: Colors.border,
     borderRadius: 8,
     marginBottom: 15,
   },
   picker: {
     height: 50,
+    color: Colors.textPrimary,
   },
 });
