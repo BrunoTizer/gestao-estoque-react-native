@@ -19,6 +19,13 @@ const TabsLayout = () => {
         }}
       />
       <Tabs.Screen
+        name="marcas"
+        options={{
+          tabBarIcon: () => <Ionicons name="pricetag" size={24} />,
+          headerTitle: "Marcas",
+        }}
+      />
+      <Tabs.Screen
         name="estoque"
         options={{
           tabBarIcon: () => <Ionicons name="analytics" size={24} />,

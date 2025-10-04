@@ -4,15 +4,15 @@ import { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Card from "../../components/Card";
 
-const FORNECEDORES_KEY = "@fornecedores";
+const MARCAS_KEY = "@marcas";
 
-const FornecedoresScreen = () => {
-  const [fornecedores, setFornecedores] = useState([]);
+const MarcasScreen = () => {
+  const [marcas, setMarcas] = useState([]);
 
   const loadData = async () => {
-    const dados = await AsyncStorage.getItem(FORNECEDORES_KEY);
+    const dados = await AsyncStorage.getItem(MARCAS_KEY);
     const lista = dados ? JSON.parse(dados) : [];
-    setFornecedores(lista);
+    setMarcas(lista);
   };
 
   useEffect(() => {
@@ -21,25 +21,27 @@ const FornecedoresScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Link href="/fornecedor-form" style={styles.link}>
-        + Novo Fornecedor
+      <Link href="/marca-form" style={styles.link}>
+        + Nova Marca
       </Link>
 
       <TouchableOpacity style={styles.refreshButton} onPress={loadData}>
         <Text style={styles.refreshText}>🔄 Atualizar</Text>
       </TouchableOpacity>
 
-      {fornecedores.map((item) => (
+      {marcas.map((item) => (
         <Card key={item.id}>
-          <Text>{item.nome}</Text>
-          <Text>{item.cnpj}</Text>
+          <Text style={styles.nome}>{item.nome}</Text>
+          <Text style={styles.status}>
+            Status: {item.ativo ? "✅ Ativo" : "❌ Inativo"}
+          </Text>
         </Card>
       ))}
     </View>
   );
 };
 
-export default FornecedoresScreen;
+export default MarcasScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -47,7 +49,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   link: {
-    backgroundColor: "#4CAF50",
+    backgroundColor: "#FF9800",
     color: "#fff",
     padding: 15,
     borderRadius: 8,
@@ -55,7 +57,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   refreshButton: {
-    backgroundColor: "#2196F3",
+    backgroundColor: "#4CAF50",
     padding: 10,
     borderRadius: 8,
     marginBottom: 20,
@@ -64,5 +66,14 @@ const styles = StyleSheet.create({
     color: "#fff",
     textAlign: "center",
     fontSize: 16,
+  },
+  nome: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 5,
+  },
+  status: {
+    fontSize: 14,
+    color: "#666",
   },
 });
