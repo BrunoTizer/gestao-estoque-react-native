@@ -16,7 +16,7 @@ npm install
 
 2. Iniciar o projeto:
 ```bash
-npm start
+npx expo start
 ```
 
 3. Rodar no dispositivo:
