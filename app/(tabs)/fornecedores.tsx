@@ -2,6 +2,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Link } from "expo-router";
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
+import Card from "../../components/Card";
 
 const FORNECEDORES_KEY = "@fornecedores";
 
@@ -24,10 +25,10 @@ const FornecedoresScreen = () => {
       </Link>
 
       {fornecedores.map((item) => (
-        <View key={item.id} style={styles.card}>
+        <Card key={item.id}>
           <Text>{item.nome}</Text>
           <Text>{item.cnpj}</Text>
-        </View>
+        </Card>
       ))}
     </View>
   );
@@ -47,11 +48,5 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     textAlign: "center",
     marginBottom: 20,
-  },
-  card: {
-    backgroundColor: "#fff",
-    padding: 15,
-    borderRadius: 8,
-    marginBottom: 10,
   },
 });

@@ -1,6 +1,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
+import Card from "../../components/Card";
 
 const PRODUTOS_KEY = "@produtos";
 
@@ -21,10 +22,10 @@ const EstoqueScreen = () => {
       <Text style={styles.title}>Estoque Atual</Text>
 
       {produtos.map((item) => (
-        <View key={item.id} style={styles.card}>
+        <Card key={item.id}>
           <Text>{item.nomeProduto}</Text>
           <Text>Código: {item.codigoProduto}</Text>
-        </View>
+        </Card>
       ))}
     </View>
   );
@@ -41,11 +42,5 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 20,
-  },
-  card: {
-    backgroundColor: "#fff",
-    padding: 15,
-    borderRadius: 8,
-    marginBottom: 10,
   },
 });

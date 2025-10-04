@@ -1,13 +1,9 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { StyleSheet, View } from "react-native";
+import Button from "../components/Button";
+import Input from "../components/Input";
 
 const PRODUTOS_KEY = "@produtos";
 
@@ -34,25 +30,21 @@ const ProdutoFormScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Código do Produto</Text>
-      <TextInput
-        style={styles.input}
+      <Input
+        label="Código do Produto"
         value={codigoProduto}
         onChangeText={setCodigoProduto}
         placeholder="Ex: PROD001"
       />
 
-      <Text style={styles.label}>Nome do Produto</Text>
-      <TextInput
-        style={styles.input}
+      <Input
+        label="Nome do Produto"
         value={nomeProduto}
         onChangeText={setNomeProduto}
         placeholder="Nome do produto"
       />
 
-      <TouchableOpacity style={styles.button} onPress={handleSubmit}>
-        <Text style={styles.buttonText}>Salvar Produto</Text>
-      </TouchableOpacity>
+      <Button title="Salvar Produto" onPress={handleSubmit} color="#2196F3" />
     </View>
   );
 };
@@ -64,31 +56,5 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: "#f5f5f5",
-  },
-  label: {
-    fontSize: 16,
-    fontWeight: "600",
-    marginTop: 15,
-    marginBottom: 5,
-  },
-  input: {
-    backgroundColor: "#fff",
-    borderWidth: 1,
-    borderColor: "#ddd",
-    padding: 12,
-    borderRadius: 8,
-    fontSize: 16,
-  },
-  button: {
-    backgroundColor: "#2196F3",
-    padding: 15,
-    borderRadius: 8,
-    marginTop: 30,
-  },
-  buttonText: {
-    color: "#fff",
-    fontSize: 18,
-    fontWeight: "bold",
-    textAlign: "center",
   },
 });
