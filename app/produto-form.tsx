@@ -11,12 +11,15 @@ const ProdutoFormScreen = () => {
   const router = useRouter();
   const [codigoProduto, setCodigoProduto] = useState("");
   const [nomeProduto, setNomeProduto] = useState("");
+  const [quantidadeAtual, setQuantidadeAtual] = useState("");
 
   async function handleSubmit() {
     const novoProduto = {
       id: Date.now().toString(),
       codigoProduto,
       nomeProduto,
+      quantidadeAtual: parseInt(quantidadeAtual) || 0,
+      dataUltimaAtualizacao: new Date().toISOString(),
       ativo: true,
     };
 
@@ -42,6 +45,14 @@ const ProdutoFormScreen = () => {
         value={nomeProduto}
         onChangeText={setNomeProduto}
         placeholder="Nome do produto"
+      />
+
+      <Input
+        label="Quantidade Inicial"
+        value={quantidadeAtual}
+        onChangeText={setQuantidadeAtual}
+        placeholder="Ex: 100"
+        keyboardType="numeric"
       />
 
       <Button title="Salvar Produto" onPress={handleSubmit} color="#2196F3" />

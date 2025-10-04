@@ -32,6 +32,13 @@ const TabsLayout = () => {
           headerTitle: "Estoque",
         }}
       />
+      <Tabs.Screen
+        name="saidas"
+        options={{
+          tabBarIcon: () => <Ionicons name="arrow-down" size={24} />,
+          headerTitle: "Saídas",
+        }}
+      />
     </Tabs>
   );
 };

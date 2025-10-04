@@ -1,17 +1,18 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Link } from "expo-router";
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Card from "../../components/Card";
 
-const PRODUTOS_KEY = "@produtos";
+const SAIDAS_KEY = "@saidas";
 
-const EstoqueScreen = () => {
-  const [produtos, setProdutos] = useState([]);
+const SaidasScreen = () => {
+  const [saidas, setSaidas] = useState([]);
 
   const loadData = async () => {
-    const dados = await AsyncStorage.getItem(PRODUTOS_KEY);
+    const dados = await AsyncStorage.getItem(SAIDAS_KEY);
     const lista = dados ? JSON.parse(dados) : [];
-    setProdutos(lista);
+    setSaidas(lista);
   };
 
   useEffect(() => {
@@ -21,43 +22,43 @@ const EstoqueScreen = () => {
   const formatData = (dataISO) => {
     if (!dataISO) return "N/A";
     const data = new Date(dataISO);
-    return data.toLocaleDateString("pt-BR");
+    return data.toLocaleDateString("pt-BR") + " " + data.toLocaleTimeString("pt-BR");
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Estoque Atual</Text>
+      <Link href="/saida-form" style={styles.link}>
+        + Registrar Saída
+      </Link>
 
       <TouchableOpacity style={styles.refreshButton} onPress={loadData}>
         <Text style={styles.refreshText}>🔄 Atualizar</Text>
       </TouchableOpacity>
 
-      {produtos.map((item) => (
+      {saidas.map((item) => (
         <Card key={item.id}>
-          <Text style={styles.nomeProduto}>{item.nomeProduto}</Text>
-          <Text style={styles.codigo}>Código: {item.codigoProduto}</Text>
-          <Text style={styles.quantidade}>
-            Quantidade: {item.quantidadeAtual || 0} unidades
-          </Text>
-          <Text style={styles.data}>
-            Última atualização: {formatData(item.dataUltimaAtualizacao)}
-          </Text>
+          <Text style={styles.produto}>{item.nomeProduto}</Text>
+          <Text style={styles.quantidade}>Quantidade: {item.quantidade} unidades</Text>
+          <Text style={styles.data}>Data: {formatData(item.dataSaida)}</Text>
         </Card>
       ))}
     </View>
   );
 };
 
-export default EstoqueScreen;
+export default SaidasScreen;
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
   },
-  title: {
-    fontSize: 20,
-    fontWeight: "bold",
+  link: {
+    backgroundColor: "#f44336",
+    color: "#fff",
+    padding: 15,
+    borderRadius: 8,
+    textAlign: "center",
     marginBottom: 10,
   },
   refreshButton: {
@@ -71,20 +72,14 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 16,
   },
-  nomeProduto: {
+  produto: {
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 5,
   },
-  codigo: {
-    fontSize: 14,
-    color: "#666",
-    marginBottom: 5,
-  },
   quantidade: {
     fontSize: 16,
-    color: "#2196F3",
-    fontWeight: "600",
+    color: "#f44336",
     marginBottom: 5,
   },
   data: {
