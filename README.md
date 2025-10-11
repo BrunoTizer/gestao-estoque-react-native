@@ -83,6 +83,10 @@ app/
 - AsyncStorage (armazenamento local)
 - TypeScript
 
-## Video explicativo
+## Vídeo Pitch
 
-https://app.guidde.com/playbooks/5QVsBRgF2wLtsgB5oGVJ3e
+https://www.loom.com/share/a613b40c79c244608f3542cf14f4f79c?sid=b49be580-427a-4031-99c3-a9c4e66bacb0
+
+## Vídeo de Funcionalidades
+
+https://app.guidde.com/share/playbooks/5QVsBRgF2wLtsgB5oGVJ3e?origin=FpQpm0BK0JcIFJS3zfGOLS7I1eG2
