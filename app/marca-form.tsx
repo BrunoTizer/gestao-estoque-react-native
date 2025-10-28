@@ -1,12 +1,10 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { StyleSheet, Switch, Text, View } from "react-native";
-import Button from "../components/Button";
-import Input from "../components/Input";
+import Button from "@/src/components/Button";
+import Input from "@/src/components/Input";
 import { Colors } from "../constants/Colors";
-
-const MARCAS_KEY = "@marcas";
+import { postMarca } from "@/src/api/marcas";
 
 const MarcaFormScreen = () => {
   const [nome, setNome] = useState("");
@@ -19,20 +17,19 @@ const MarcaFormScreen = () => {
       return;
     }
 
-    const novaMarca = {
-      id: Date.now().toString(),
-      nome,
-      ativo,
-    };
+    try {
+      const novaMarca = {
+        nome,
+        ativo,
+      };
 
-    const dadosAtuais = await AsyncStorage.getItem(MARCAS_KEY);
-    const marcas = dadosAtuais ? JSON.parse(dadosAtuais) : [];
-    marcas.push(novaMarca);
-
-    await AsyncStorage.setItem(MARCAS_KEY, JSON.stringify(marcas));
-
-    alert("Marca cadastrada com sucesso!");
-    router.back();
+      await postMarca(novaMarca);
+      alert("Marca cadastrada com sucesso!");
+      router.back();
+    } catch (error) {
+      console.error("Erro ao salvar marca:", error);
+      alert("Erro ao salvar marca. Verifique se a API está rodando.");
+    }
   };
 
   return (
