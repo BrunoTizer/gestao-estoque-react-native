@@ -1,12 +1,10 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { StyleSheet, View } from "react-native";
-import Button from "../components/Button";
-import Input from "../components/Input";
+import Button from "@/src/components/Button";
+import Input from "@/src/components/Input";
 import { Colors } from "../constants/Colors";
-
-const FORNECEDORES_KEY = "@fornecedores";
+import { postFornecedor } from "@/src/api/fornecedores";
 
 const FornecedorFormScreen = () => {
   const router = useRouter();
@@ -16,21 +14,21 @@ const FornecedorFormScreen = () => {
   const [email, setEmail] = useState("");
 
   async function handleSubmit() {
-    const novoFornecedor = {
-      id: Date.now().toString(),
-      nome,
-      cnpj,
-      telefone,
-      email,
-      ativo: true,
-    };
+    try {
+      const novoFornecedor = {
+        nome,
+        cnpj,
+        telefone,
+        email,
+        ativo: true,
+      };
 
-    const dados = await AsyncStorage.getItem(FORNECEDORES_KEY);
-    const fornecedores = dados ? JSON.parse(dados) : [];
-    fornecedores.push(novoFornecedor);
-    await AsyncStorage.setItem(FORNECEDORES_KEY, JSON.stringify(fornecedores));
-
-    router.back();
+      await postFornecedor(novoFornecedor);
+      router.back();
+    } catch (error) {
+      console.error("Erro ao salvar fornecedor:", error);
+      alert("Erro ao salvar fornecedor. Verifique se a API está rodando.");
+    }
   }
 
   return (
