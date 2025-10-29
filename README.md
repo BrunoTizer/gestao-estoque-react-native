@@ -116,3 +116,8 @@ https://www.loom.com/share/a613b40c79c244608f3542cf14f4f79c?sid=b49be580-427a-40
 ## Vídeo de Funcionalidades
 
 https://app.guidde.com/share/playbooks/5QVsBRgF2wLtsgB5oGVJ3e?origin=FpQpm0BK0JcIFJS3zfGOLS7I1eG2
+
+
+## Vídeo de Demonstração do uso da API
+
+https://www.loom.com/share/d96308b8e3744063a849e5c6fa6cb645
