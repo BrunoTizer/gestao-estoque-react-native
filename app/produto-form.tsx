@@ -2,6 +2,7 @@ import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { Picker } from "@react-native-picker/picker";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Button from "@/src/components/Button";
 import Input from "@/src/components/Input";
 import { Colors } from "../constants/Colors";
@@ -24,6 +25,7 @@ const ProdutoFormScreen = () => {
   useEffect(() => {
     carregarFornecedores();
     carregarMarcas();
+    carregarRascunho();
   }, []);
 
   async function carregarFornecedores() {
@@ -42,6 +44,45 @@ const ProdutoFormScreen = () => {
     }
   }
 
+  async function carregarRascunho() {
+    try {
+      const rascunho = await AsyncStorage.getItem("produto_rascunho");
+      if (rascunho) {
+        const dados = JSON.parse(rascunho);
+        setCodigoProduto(dados.codigoProduto);
+        setNomeProduto(dados.nomeProduto);
+        setQuantidadeAtual(dados.quantidadeAtual);
+        setFornecedorId(dados.fornecedorId);
+        setMarcaId(dados.marcaId);
+      }
+    } catch (error) {
+      console.error("Erro ao carregar rascunho:", error);
+    }
+  }
+
+  async function salvarRascunho() {
+    try {
+      const dados = {
+        codigoProduto,
+        nomeProduto,
+        quantidadeAtual,
+        fornecedorId,
+        marcaId,
+      };
+      await AsyncStorage.setItem("produto_rascunho", JSON.stringify(dados));
+    } catch (error) {
+      console.error("Erro ao salvar rascunho:", error);
+    }
+  }
+
+  async function deletarRascunho() {
+    try {
+      await AsyncStorage.removeItem("produto_rascunho");
+    } catch (error) {
+      console.error("Erro ao deletar rascunho:", error);
+    }
+  }
+
   async function handleSubmit() {
     const novoProduto = {
       codigoProduto: codigoProduto,
@@ -57,6 +98,7 @@ const ProdutoFormScreen = () => {
     };
 
     await postProduto(novoProduto);
+    await deletarRascunho();
     router.back();
   }
 
@@ -65,28 +107,43 @@ const ProdutoFormScreen = () => {
       <Input
         label="Código do Produto"
         value={codigoProduto}
-        onChangeText={setCodigoProduto}
+        onChangeText={(valor) => {
+          setCodigoProduto(valor);
+          salvarRascunho();
+        }}
         placeholder="Ex: PROD001"
       />
 
       <Input
         label="Nome do Produto"
         value={nomeProduto}
-        onChangeText={setNomeProduto}
+        onChangeText={(valor) => {
+          setNomeProduto(valor);
+          salvarRascunho();
+        }}
         placeholder="Nome do produto"
       />
 
       <Input
         label="Quantidade Inicial"
         value={quantidadeAtual}
-        onChangeText={setQuantidadeAtual}
+        onChangeText={(valor) => {
+          setQuantidadeAtual(valor);
+          salvarRascunho();
+        }}
         placeholder="Ex: 100"
         keyboardType="numeric"
       />
 
       <View style={styles.campo}>
         <Text style={styles.label}>Fornecedor</Text>
-        <Picker selectedValue={fornecedorId} onValueChange={setFornecedorId}>
+        <Picker
+          selectedValue={fornecedorId}
+          onValueChange={(valor) => {
+            setFornecedorId(valor);
+            salvarRascunho();
+          }}
+        >
           {fornecedores.map((item) => (
             <Picker.Item key={item.id} label={item.nome} value={item.id} />
           ))}
@@ -95,7 +152,13 @@ const ProdutoFormScreen = () => {
 
       <View style={styles.campo}>
         <Text style={styles.label}>Marca</Text>
-        <Picker selectedValue={marcaId} onValueChange={setMarcaId}>
+        <Picker
+          selectedValue={marcaId}
+          onValueChange={(valor) => {
+            setMarcaId(valor);
+            salvarRascunho();
+          }}
+        >
           {marcas.map((item) => (
             <Picker.Item key={item.id} label={item.nome} value={item.id} />
           ))}

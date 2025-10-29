@@ -1,6 +1,7 @@
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Button from "@/src/components/Button";
 import Input from "@/src/components/Input";
 import { Colors } from "../constants/Colors";
@@ -13,6 +14,47 @@ const FornecedorFormScreen = () => {
   const [telefone, setTelefone] = useState("");
   const [email, setEmail] = useState("");
 
+  useEffect(() => {
+    carregarRascunho();
+  }, []);
+
+  async function carregarRascunho() {
+    try {
+      const rascunho = await AsyncStorage.getItem("fornecedor_rascunho");
+      if (rascunho) {
+        const dados = JSON.parse(rascunho);
+        setNome(dados.nome);
+        setCnpj(dados.cnpj);
+        setTelefone(dados.telefone);
+        setEmail(dados.email);
+      }
+    } catch (error) {
+      console.error("Erro ao carregar rascunho:", error);
+    }
+  }
+
+  async function salvarRascunho() {
+    try {
+      const dados = {
+        nome,
+        cnpj,
+        telefone,
+        email,
+      };
+      await AsyncStorage.setItem("fornecedor_rascunho", JSON.stringify(dados));
+    } catch (error) {
+      console.error("Erro ao salvar rascunho:", error);
+    }
+  }
+
+  async function deletarRascunho() {
+    try {
+      await AsyncStorage.removeItem("fornecedor_rascunho");
+    } catch (error) {
+      console.error("Erro ao deletar rascunho:", error);
+    }
+  }
+
   async function handleSubmit() {
     try {
       const novoFornecedor = {
@@ -24,6 +66,7 @@ const FornecedorFormScreen = () => {
       };
 
       await postFornecedor(novoFornecedor);
+      await deletarRascunho();
       router.back();
     } catch (error) {
       console.error("Erro ao salvar fornecedor:", error);
@@ -36,14 +79,20 @@ const FornecedorFormScreen = () => {
       <Input
         label="Nome"
         value={nome}
-        onChangeText={setNome}
+        onChangeText={(valor) => {
+          setNome(valor);
+          salvarRascunho();
+        }}
         placeholder="Nome do fornecedor"
       />
 
       <Input
         label="CNPJ"
         value={cnpj}
-        onChangeText={setCnpj}
+        onChangeText={(valor) => {
+          setCnpj(valor);
+          salvarRascunho();
+        }}
         placeholder="00.000.000/0000-00"
         keyboardType="numeric"
       />
@@ -51,7 +100,10 @@ const FornecedorFormScreen = () => {
       <Input
         label="Telefone"
         value={telefone}
-        onChangeText={setTelefone}
+        onChangeText={(valor) => {
+          setTelefone(valor);
+          salvarRascunho();
+        }}
         placeholder="(00) 00000-0000"
         keyboardType="phone-pad"
       />
@@ -59,7 +111,10 @@ const FornecedorFormScreen = () => {
       <Input
         label="Email"
         value={email}
-        onChangeText={setEmail}
+        onChangeText={(valor) => {
+          setEmail(valor);
+          salvarRascunho();
+        }}
         placeholder="email@exemplo.com"
         keyboardType="email-address"
       />

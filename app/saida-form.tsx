@@ -2,6 +2,7 @@ import { Picker } from "@react-native-picker/picker";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import Button from "@/src/components/Button";
 import Input from "@/src/components/Input";
 import { Colors } from "../constants/Colors";
@@ -17,6 +18,7 @@ const SaidaFormScreen = () => {
 
   useEffect(() => {
     carregarProdutos();
+    carregarRascunho();
   }, []);
 
   async function carregarProdutos() {
@@ -24,6 +26,39 @@ const SaidaFormScreen = () => {
     setProdutos(lista);
     if (lista.length > 0) {
       setProdutoId(lista[0].id);
+    }
+  }
+
+  async function carregarRascunho() {
+    try {
+      const rascunho = await AsyncStorage.getItem("saida_rascunho");
+      if (rascunho) {
+        const dados = JSON.parse(rascunho);
+        setProdutoId(dados.produtoId);
+        setQuantidade(dados.quantidade);
+      }
+    } catch (error) {
+      console.error("Erro ao carregar rascunho:", error);
+    }
+  }
+
+  async function salvarRascunho(prodId: string, qtd: string) {
+    try {
+      const dados = {
+        produtoId: prodId,
+        quantidade: qtd,
+      };
+      await AsyncStorage.setItem("saida_rascunho", JSON.stringify(dados));
+    } catch (error) {
+      console.error("Erro ao salvar rascunho:", error);
+    }
+  }
+
+  async function deletarRascunho() {
+    try {
+      await AsyncStorage.removeItem("saida_rascunho");
+    } catch (error) {
+      console.error("Erro ao deletar rascunho:", error);
     }
   }
 
@@ -36,6 +71,7 @@ const SaidaFormScreen = () => {
     };
 
     await postSaida(novaSaida);
+    await deletarRascunho();
     router.back();
   }
 
@@ -53,7 +89,10 @@ const SaidaFormScreen = () => {
       <Input
         label="Quantidade"
         value={quantidade}
-        onChangeText={setQuantidade}
+        onChangeText={(qtd) => {
+          setQuantidade(qtd);
+          salvarRascunho(produtoId, qtd);
+        }}
         placeholder="Ex: 10"
         keyboardType="numeric"
       />
