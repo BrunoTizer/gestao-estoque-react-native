@@ -18,7 +18,7 @@ const SaidasScreen = () => {
     loadData();
   }, []);
 
-  const formatData = (dataISO) => {
+  const formatData = (dataISO: string | null | undefined) => {
     if (!dataISO) return "N/A";
     const data = new Date(dataISO);
     return (

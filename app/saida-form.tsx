@@ -7,10 +7,11 @@ import Input from "@/src/components/Input";
 import { Colors } from "../constants/Colors";
 import { getProdutos } from "@/src/api/produtos";
 import { postSaida } from "@/src/api/saidas";
+import { Produto } from "@/src/types/produtos";
 
 const SaidaFormScreen = () => {
   const router = useRouter();
-  const [produtos, setProdutos] = useState([]);
+  const [produtos, setProdutos] = useState<Produto[]>([]);
   const [produtoId, setProdutoId] = useState("");
   const [quantidade, setQuantidade] = useState("");
 
