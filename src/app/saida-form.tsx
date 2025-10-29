@@ -5,7 +5,7 @@ import { StyleSheet, Text, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Button from "@/src/components/Button";
 import Input from "@/src/components/Input";
-import { Colors } from "../constants/Colors";
+import { Colors } from "@/constants/Colors";
 import { getProdutos } from "@/src/api/produtos";
 import { postSaida } from "@/src/api/saidas";
 import { Produto } from "@/src/types/produtos";
@@ -81,7 +81,11 @@ const SaidaFormScreen = () => {
         <Text style={styles.label}>Produto</Text>
         <Picker selectedValue={produtoId} onValueChange={setProdutoId}>
           {produtos.map((item) => (
-            <Picker.Item key={item.id} label={item.nomeProduto} value={item.id} />
+            <Picker.Item
+              key={item.id}
+              label={item.nomeProduto}
+              value={item.id}
+            />
           ))}
         </Picker>
       </View>

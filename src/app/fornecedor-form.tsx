@@ -4,7 +4,7 @@ import { StyleSheet, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Button from "@/src/components/Button";
 import Input from "@/src/components/Input";
-import { Colors } from "../constants/Colors";
+import { Colors } from "@/constants/Colors";
 import { postFornecedor } from "@/src/api/fornecedores";
 
 const FornecedorFormScreen = () => {

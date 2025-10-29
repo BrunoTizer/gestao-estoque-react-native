@@ -55,33 +55,59 @@ npx expo start
 
 ### 4. Armazenamento local com AsyncStorage (20 pontos)
 
-- Dados de fornecedores salvos em AsyncStorage
-- Dados de produtos salvos em AsyncStorage
-- Dados persistem após reiniciar o app
-- Carregamento automático dos dados ao abrir as telas
+- Rascunho de formulários salvos em AsyncStorage
+- Quando você digita um formulário, os dados são salvos automaticamente
+- Se fechar o app, ao abrir novamente os dados continuam no formulário
+- Após enviar com sucesso, o rascunho é deletado
+- Funciona para: Fornecedores, Marcas, Produtos e Saídas
 
 ## Estrutura do Projeto
 
 ```
 app/
 ├── (tabs)/
-│   ├── _layout.tsx          # Layout das tabs
+│   ├── _layout.tsx          # Layout das abas
 │   ├── fornecedores.tsx     # Lista de fornecedores
+│   ├── marcas.tsx           # Lista de marcas
 │   ├── produtos.tsx         # Lista de produtos
-│   └── estoque.tsx          # Visualização do estoque
+│   ├── estoque.tsx          # Visualização do estoque
+│   └── saidas.tsx           # Histórico de saídas
 ├── _layout.tsx              # Layout raiz
 ├── index.tsx                # Tela inicial
-├── fornecedor-form.tsx      # Formulário de fornecedor
-└── produto-form.tsx         # Formulário de produto
+├── fornecedor-form.tsx      # Formulário de fornecedor (salva rascunho)
+├── marca-form.tsx           # Formulário de marca (salva rascunho)
+├── produto-form.tsx         # Formulário de produto (salva rascunho)
+└── saida-form.tsx           # Formulário de saída (salva rascunho)
+
+src/
+├── api/                     # Chamadas para a API
+├── components/              # Componentes reutilizáveis
+├── types/                   # Tipos TypeScript
+└── constants/               # Constantes (cores, etc)
 ```
 
 ## Tecnologias Utilizadas
 
-- React Native
-- Expo
-- Expo Router (navegação)
-- AsyncStorage (armazenamento local)
-- TypeScript
+- React Native (para fazer app mobile)
+- Expo (para rodar o app)
+- Expo Router (para navegação entre telas)
+- AsyncStorage (para salvar rascunho)
+- Axios (para conectar na API)
+- TypeScript (para tipagem)
+
+## API
+
+O app conecta em uma API REST que roda em `http://localhost:8080/api/v1`
+
+Antes de rodar o app, é preciso:
+1. Ter a API rodando (Spring Boot)
+2. A API deve estar em `http://localhost:8080`
+
+O app faz requisições para:
+- `/fornecedores` - fornecedores
+- `/marcas` - marcas
+- `/produtos` - produtos
+- `/saida-estoque` - saídas de produtos
 
 ## Vídeo Pitch
 

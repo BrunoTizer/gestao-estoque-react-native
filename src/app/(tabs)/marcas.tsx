@@ -2,54 +2,49 @@ import { Link } from "expo-router";
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Card from "@/src/components/Card";
-import { Colors } from "../../constants/Colors";
-import { getSaidas } from "@/src/api/saidas";
-import { SaidaEstoque } from "@/src/types/saidas";
+import { Colors } from "@/constants/Colors";
+import { getMarcas } from "@/src/api/marcas";
+import { Marca } from "@/src/types/marcas";
 
-const SaidasScreen = () => {
-  const [saidas, setSaidas] = useState<SaidaEstoque[]>([]);
+const MarcasScreen = () => {
+  const [marcas, setMarcas] = useState<Marca[]>([]);
 
   const loadData = async () => {
-    const lista = await getSaidas();
-    setSaidas(lista);
+    try {
+      const lista = await getMarcas();
+      setMarcas(lista);
+    } catch (error) {
+      console.error("Erro ao carregar marcas:", error);
+    }
   };
 
   useEffect(() => {
     loadData();
   }, []);
 
-  const formatData = (dataISO: string | null | undefined) => {
-    if (!dataISO) return "N/A";
-    const data = new Date(dataISO);
-    return (
-      data.toLocaleDateString("pt-BR") + " " + data.toLocaleTimeString("pt-BR")
-    );
-  };
-
   return (
     <View style={styles.container}>
-      <Link href="/saida-form" style={styles.link}>
-        + Registrar Saída
+      <Link href="/marca-form" style={styles.link}>
+        + Nova Marca
       </Link>
 
       <TouchableOpacity style={styles.refreshButton} onPress={loadData}>
         <Text style={styles.refreshText}>🔄 Atualizar</Text>
       </TouchableOpacity>
 
-      {saidas.map((item) => (
+      {marcas.map((item) => (
         <Card key={item.id}>
-          <Text style={styles.produto}>{item.produto.nomeProduto}</Text>
-          <Text style={styles.quantidade}>
-            Quantidade: {item.quantidade} unidades
+          <Text style={styles.nome}>{item.nome}</Text>
+          <Text style={styles.status}>
+            Status: {item.ativo ? "✅ Ativo" : "❌ Inativo"}
           </Text>
-          <Text style={styles.data}>Data: {formatData(item.dataSaida)}</Text>
         </Card>
       ))}
     </View>
   );
 };
 
-export default SaidasScreen;
+export default MarcasScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -58,7 +53,7 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
   },
   link: {
-    backgroundColor: Colors.danger,
+    backgroundColor: Colors.primary,
     color: Colors.white,
     padding: 15,
     borderRadius: 8,
@@ -76,19 +71,14 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 16,
   },
-  produto: {
+  nome: {
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 5,
     color: Colors.textPrimary,
   },
-  quantidade: {
-    fontSize: 16,
-    color: Colors.danger,
-    marginBottom: 5,
-  },
-  data: {
-    fontSize: 12,
+  status: {
+    fontSize: 14,
     color: Colors.textSecondary,
   },
 });

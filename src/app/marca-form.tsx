@@ -4,7 +4,7 @@ import { StyleSheet, Switch, Text, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Button from "@/src/components/Button";
 import Input from "@/src/components/Input";
-import { Colors } from "../constants/Colors";
+import { Colors } from "@/constants/Colors";
 import { postMarca } from "@/src/api/marcas";
 
 const MarcaFormScreen = () => {

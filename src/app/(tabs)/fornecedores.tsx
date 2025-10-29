@@ -2,19 +2,19 @@ import { Link } from "expo-router";
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Card from "@/src/components/Card";
-import { Colors } from "../../constants/Colors";
-import { getMarcas } from "@/src/api/marcas";
-import { Marca } from "@/src/types/marcas";
+import { Colors } from "@/constants/Colors";
+import { getFornecedores } from "@/src/api/fornecedores";
+import { Fornecedor } from "@/src/types/fornecedores";
 
-const MarcasScreen = () => {
-  const [marcas, setMarcas] = useState<Marca[]>([]);
+const FornecedoresScreen = () => {
+  const [fornecedores, setFornecedores] = useState<Fornecedor[]>([]);
 
   const loadData = async () => {
     try {
-      const lista = await getMarcas();
-      setMarcas(lista);
+      const lista = await getFornecedores();
+      setFornecedores(lista);
     } catch (error) {
-      console.error("Erro ao carregar marcas:", error);
+      console.error("Erro ao carregar fornecedores:", error);
     }
   };
 
@@ -24,27 +24,25 @@ const MarcasScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Link href="/marca-form" style={styles.link}>
-        + Nova Marca
+      <Link href="/fornecedor-form" style={styles.link}>
+        + Novo Fornecedor
       </Link>
 
       <TouchableOpacity style={styles.refreshButton} onPress={loadData}>
         <Text style={styles.refreshText}>🔄 Atualizar</Text>
       </TouchableOpacity>
 
-      {marcas.map((item) => (
+      {fornecedores.map((item) => (
         <Card key={item.id}>
-          <Text style={styles.nome}>{item.nome}</Text>
-          <Text style={styles.status}>
-            Status: {item.ativo ? "✅ Ativo" : "❌ Inativo"}
-          </Text>
+          <Text>{item.nome}</Text>
+          <Text>{item.cnpj}</Text>
         </Card>
       ))}
     </View>
   );
 };
 
-export default MarcasScreen;
+export default FornecedoresScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -70,15 +68,5 @@ const styles = StyleSheet.create({
     color: Colors.white,
     textAlign: "center",
     fontSize: 16,
-  },
-  nome: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 5,
-    color: Colors.textPrimary,
-  },
-  status: {
-    fontSize: 14,
-    color: Colors.textSecondary,
   },
 });

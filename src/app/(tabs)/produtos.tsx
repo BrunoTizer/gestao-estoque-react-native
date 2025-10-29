@@ -2,19 +2,19 @@ import { Link } from "expo-router";
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Card from "@/src/components/Card";
-import { Colors } from "../../constants/Colors";
-import { getFornecedores } from "@/src/api/fornecedores";
-import { Fornecedor } from "@/src/types/fornecedores";
+import { Colors } from "@/constants/Colors";
+import { getProdutos } from "@/src/api/produtos";
+import { Produto } from "@/src/types/produtos";
 
-const FornecedoresScreen = () => {
-  const [fornecedores, setFornecedores] = useState<Fornecedor[]>([]);
+const ProdutosScreen = () => {
+  const [produtos, setProdutos] = useState<Produto[]>([]);
 
   const loadData = async () => {
     try {
-      const lista = await getFornecedores();
-      setFornecedores(lista);
+      const lista = await getProdutos();
+      setProdutos(lista);
     } catch (error) {
-      console.error("Erro ao carregar fornecedores:", error);
+      console.error("Erro ao carregar produtos:", error);
     }
   };
 
@@ -24,25 +24,25 @@ const FornecedoresScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Link href="/fornecedor-form" style={styles.link}>
-        + Novo Fornecedor
+      <Link href="/produto-form" style={styles.link}>
+        + Novo Produto
       </Link>
 
       <TouchableOpacity style={styles.refreshButton} onPress={loadData}>
         <Text style={styles.refreshText}>🔄 Atualizar</Text>
       </TouchableOpacity>
 
-      {fornecedores.map((item) => (
+      {produtos.map((item) => (
         <Card key={item.id}>
-          <Text>{item.nome}</Text>
-          <Text>{item.cnpj}</Text>
+          <Text>{item.nomeProduto}</Text>
+          <Text>{item.codigoProduto}</Text>
         </Card>
       ))}
     </View>
   );
 };
 
-export default FornecedoresScreen;
+export default ProdutosScreen;
 
 const styles = StyleSheet.create({
   container: {

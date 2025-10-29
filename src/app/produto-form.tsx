@@ -5,7 +5,7 @@ import { Picker } from "@react-native-picker/picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Button from "@/src/components/Button";
 import Input from "@/src/components/Input";
-import { Colors } from "../constants/Colors";
+import { Colors } from "@/constants/Colors";
 import { postProduto } from "@/src/api/produtos";
 import { getFornecedores } from "@/src/api/fornecedores";
 import { getMarcas } from "@/src/api/marcas";
