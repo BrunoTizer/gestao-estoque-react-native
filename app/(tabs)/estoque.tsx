@@ -1,17 +1,15 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import Card from "../../components/Card";
+import Card from "@/src/components/Card";
 import { Colors } from "../../constants/Colors";
-
-const PRODUTOS_KEY = "@produtos";
+import { getProdutos } from "@/src/api/produtos";
+import { Produto } from "@/src/types/produtos";
 
 const EstoqueScreen = () => {
-  const [produtos, setProdutos] = useState([]);
+  const [produtos, setProdutos] = useState<Produto[]>([]);
 
   const loadData = async () => {
-    const dados = await AsyncStorage.getItem(PRODUTOS_KEY);
-    const lista = dados ? JSON.parse(dados) : [];
+    const lista = await getProdutos();
     setProdutos(lista);
   };
 

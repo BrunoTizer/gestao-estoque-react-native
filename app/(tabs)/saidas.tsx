@@ -1,18 +1,16 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Link } from "expo-router";
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import Card from "../../components/Card";
+import Card from "@/src/components/Card";
 import { Colors } from "../../constants/Colors";
-
-const SAIDAS_KEY = "@saidas";
+import { getSaidas } from "@/src/api/saidas";
+import { SaidaEstoque } from "@/src/types/saidas";
 
 const SaidasScreen = () => {
-  const [saidas, setSaidas] = useState([]);
+  const [saidas, setSaidas] = useState<SaidaEstoque[]>([]);
 
   const loadData = async () => {
-    const dados = await AsyncStorage.getItem(SAIDAS_KEY);
-    const lista = dados ? JSON.parse(dados) : [];
+    const lista = await getSaidas();
     setSaidas(lista);
   };
 
@@ -23,7 +21,9 @@ const SaidasScreen = () => {
   const formatData = (dataISO) => {
     if (!dataISO) return "N/A";
     const data = new Date(dataISO);
-    return data.toLocaleDateString("pt-BR") + " " + data.toLocaleTimeString("pt-BR");
+    return (
+      data.toLocaleDateString("pt-BR") + " " + data.toLocaleTimeString("pt-BR")
+    );
   };
 
   return (
@@ -38,8 +38,10 @@ const SaidasScreen = () => {
 
       {saidas.map((item) => (
         <Card key={item.id}>
-          <Text style={styles.produto}>{item.nomeProduto}</Text>
-          <Text style={styles.quantidade}>Quantidade: {item.quantidade} unidades</Text>
+          <Text style={styles.produto}>{item.produto.nomeProduto}</Text>
+          <Text style={styles.quantidade}>
+            Quantidade: {item.quantidade} unidades
+          </Text>
           <Text style={styles.data}>Data: {formatData(item.dataSaida)}</Text>
         </Card>
       ))}

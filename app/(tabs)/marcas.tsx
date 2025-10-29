@@ -1,19 +1,21 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Link } from "expo-router";
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import Card from "../../components/Card";
+import Card from "@/src/components/Card";
 import { Colors } from "../../constants/Colors";
-
-const MARCAS_KEY = "@marcas";
+import { getMarcas } from "@/src/api/marcas";
+import { Marca } from "@/src/types/marcas";
 
 const MarcasScreen = () => {
-  const [marcas, setMarcas] = useState([]);
+  const [marcas, setMarcas] = useState<Marca[]>([]);
 
   const loadData = async () => {
-    const dados = await AsyncStorage.getItem(MARCAS_KEY);
-    const lista = dados ? JSON.parse(dados) : [];
-    setMarcas(lista);
+    try {
+      const lista = await getMarcas();
+      setMarcas(lista);
+    } catch (error) {
+      console.error("Erro ao carregar marcas:", error);
+    }
   };
 
   useEffect(() => {

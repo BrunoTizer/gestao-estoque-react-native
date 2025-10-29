@@ -1,95 +1,50 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Picker } from "@react-native-picker/picker";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import Button from "../components/Button";
-import Input from "../components/Input";
+import Button from "@/src/components/Button";
+import Input from "@/src/components/Input";
 import { Colors } from "../constants/Colors";
-
-const PRODUTOS_KEY = "@produtos";
-const SAIDAS_KEY = "@saidas";
+import { getProdutos } from "@/src/api/produtos";
+import { postSaida } from "@/src/api/saidas";
 
 const SaidaFormScreen = () => {
   const router = useRouter();
   const [produtos, setProdutos] = useState([]);
-  const [produtoSelecionado, setProdutoSelecionado] = useState("");
+  const [produtoId, setProdutoId] = useState("");
   const [quantidade, setQuantidade] = useState("");
 
   useEffect(() => {
-    async function loadProdutos() {
-      const dados = await AsyncStorage.getItem(PRODUTOS_KEY);
-      const lista = dados ? JSON.parse(dados) : [];
-      setProdutos(lista);
-    }
-    loadProdutos();
+    carregarProdutos();
   }, []);
 
-  const handleSubmit = async () => {
-    if (!produtoSelecionado) {
-      alert("Selecione um produto");
-      return;
+  async function carregarProdutos() {
+    const lista = await getProdutos();
+    setProdutos(lista);
+    if (lista.length > 0) {
+      setProdutoId(lista[0].id);
     }
+  }
 
-    const qtd = parseInt(quantidade);
-    if (!qtd || qtd <= 0) {
-      alert("Quantidade inválida");
-      return;
-    }
-
-    const produto = produtos.find((p) => p.id === produtoSelecionado);
-
-    if (produto.quantidadeAtual < qtd) {
-      alert("Quantidade insuficiente no estoque!");
-      return;
-    }
-
-    const novosProdutos = produtos.map((p) => {
-      if (p.id === produtoSelecionado) {
-        return {
-          ...p,
-          quantidadeAtual: p.quantidadeAtual - qtd,
-          dataUltimaAtualizacao: new Date().toISOString(),
-        };
-      }
-      return p;
-    });
-
-    await AsyncStorage.setItem(PRODUTOS_KEY, JSON.stringify(novosProdutos));
-
+  async function handleSubmit() {
     const novaSaida = {
-      id: Date.now().toString(),
-      produtoId: produtoSelecionado,
-      nomeProduto: produto.nomeProduto,
-      quantidade: qtd,
-      dataSaida: new Date().toISOString(),
+      produto: {
+        id: produtoId,
+      },
+      quantidade: parseInt(quantidade),
     };
 
-    const dadosSaidas = await AsyncStorage.getItem(SAIDAS_KEY);
-    const saidas = dadosSaidas ? JSON.parse(dadosSaidas) : [];
-    saidas.push(novaSaida);
-    await AsyncStorage.setItem(SAIDAS_KEY, JSON.stringify(saidas));
-
-    alert("Saída registrada com sucesso!");
+    await postSaida(novaSaida);
     router.back();
-  };
+  }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.label}>Produto</Text>
-      <View style={styles.pickerContainer}>
-        <Picker
-          selectedValue={produtoSelecionado}
-          onValueChange={setProdutoSelecionado}
-          style={styles.picker}
-        >
-          <Picker.Item label="Selecione um produto" value="" />
-          {produtos.map((produto) => (
-            <Picker.Item
-              key={produto.id}
-              label={`${produto.nomeProduto} (Estoque: ${produto.quantidadeAtual || 0})`}
-              value={produto.id}
-            />
+      <View style={styles.campo}>
+        <Text style={styles.label}>Produto</Text>
+        <Picker selectedValue={produtoId} onValueChange={setProdutoId}>
+          {produtos.map((item) => (
+            <Picker.Item key={item.id} label={item.nomeProduto} value={item.id} />
           ))}
         </Picker>
       </View>
@@ -98,11 +53,11 @@ const SaidaFormScreen = () => {
         label="Quantidade"
         value={quantidade}
         onChangeText={setQuantidade}
-        placeholder="Quantidade a retirar"
+        placeholder="Ex: 10"
         keyboardType="numeric"
       />
 
-      <Button title="Registrar Saída" onPress={handleSubmit} color={Colors.danger} />
+      <Button title="Registrar Saída" onPress={handleSubmit} />
     </View>
   );
 };
@@ -115,22 +70,12 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: Colors.background,
   },
-  label: {
-    fontSize: 16,
-    fontWeight: "600",
-    marginTop: 15,
-    marginBottom: 5,
-    color: Colors.textPrimary,
-  },
-  pickerContainer: {
-    backgroundColor: Colors.white,
-    borderWidth: 1,
-    borderColor: Colors.border,
-    borderRadius: 8,
+  campo: {
     marginBottom: 15,
   },
-  picker: {
-    height: 50,
-    color: Colors.textPrimary,
+  label: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 5,
   },
 });

@@ -1,19 +1,21 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Link } from "expo-router";
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import Card from "../../components/Card";
+import Card from "@/src/components/Card";
 import { Colors } from "../../constants/Colors";
-
-const FORNECEDORES_KEY = "@fornecedores";
+import { getFornecedores } from "@/src/api/fornecedores";
+import { Fornecedor } from "@/src/types/fornecedores";
 
 const FornecedoresScreen = () => {
-  const [fornecedores, setFornecedores] = useState([]);
+  const [fornecedores, setFornecedores] = useState<Fornecedor[]>([]);
 
   const loadData = async () => {
-    const dados = await AsyncStorage.getItem(FORNECEDORES_KEY);
-    const lista = dados ? JSON.parse(dados) : [];
-    setFornecedores(lista);
+    try {
+      const lista = await getFornecedores();
+      setFornecedores(lista);
+    } catch (error) {
+      console.error("Erro ao carregar fornecedores:", error);
+    }
   };
 
   useEffect(() => {

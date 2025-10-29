@@ -1,19 +1,21 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Link } from "expo-router";
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import Card from "../../components/Card";
+import Card from "@/src/components/Card";
 import { Colors } from "../../constants/Colors";
-
-const PRODUTOS_KEY = "@produtos";
+import { getProdutos } from "@/src/api/produtos";
+import { Produto } from "@/src/types/produtos";
 
 const ProdutosScreen = () => {
-  const [produtos, setProdutos] = useState([]);
+  const [produtos, setProdutos] = useState<Produto[]>([]);
 
   const loadData = async () => {
-    const dados = await AsyncStorage.getItem(PRODUTOS_KEY);
-    const lista = dados ? JSON.parse(dados) : [];
-    setProdutos(lista);
+    try {
+      const lista = await getProdutos();
+      setProdutos(lista);
+    } catch (error) {
+      console.error("Erro ao carregar produtos:", error);
+    }
   };
 
   useEffect(() => {
