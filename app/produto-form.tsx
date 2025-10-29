@@ -1,34 +1,60 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
-import { useState } from "react";
-import { StyleSheet, View } from "react-native";
-import Button from "../components/Button";
-import Input from "../components/Input";
+import { useEffect, useState } from "react";
+import { StyleSheet, View, Text } from "react-native";
+import { Picker } from "@react-native-picker/picker";
+import Button from "@/src/components/Button";
+import Input from "@/src/components/Input";
 import { Colors } from "../constants/Colors";
-
-const PRODUTOS_KEY = "@produtos";
+import { postProduto } from "@/src/api/produtos";
+import { getFornecedores } from "@/src/api/fornecedores";
+import { getMarcas } from "@/src/api/marcas";
 
 const ProdutoFormScreen = () => {
   const router = useRouter();
   const [codigoProduto, setCodigoProduto] = useState("");
   const [nomeProduto, setNomeProduto] = useState("");
   const [quantidadeAtual, setQuantidadeAtual] = useState("");
+  const [fornecedorId, setFornecedorId] = useState("");
+  const [marcaId, setMarcaId] = useState("");
+  const [fornecedores, setFornecedores] = useState([]);
+  const [marcas, setMarcas] = useState([]);
+
+  useEffect(() => {
+    carregarFornecedores();
+    carregarMarcas();
+  }, []);
+
+  async function carregarFornecedores() {
+    const lista = await getFornecedores();
+    setFornecedores(lista);
+    if (lista.length > 0) {
+      setFornecedorId(lista[0].id);
+    }
+  }
+
+  async function carregarMarcas() {
+    const lista = await getMarcas();
+    setMarcas(lista);
+    if (lista.length > 0) {
+      setMarcaId(lista[0].id);
+    }
+  }
 
   async function handleSubmit() {
     const novoProduto = {
-      id: Date.now().toString(),
-      codigoProduto,
-      nomeProduto,
-      quantidadeAtual: parseInt(quantidadeAtual) || 0,
-      dataUltimaAtualizacao: new Date().toISOString(),
+      codigoProduto: codigoProduto,
+      nomeProduto: nomeProduto,
+      fornecedor: {
+        id: fornecedorId,
+      },
+      marca: {
+        id: marcaId,
+      },
+      quantidadeAtual: parseInt(quantidadeAtual),
       ativo: true,
     };
 
-    const dados = await AsyncStorage.getItem(PRODUTOS_KEY);
-    const produtos = dados ? JSON.parse(dados) : [];
-    produtos.push(novoProduto);
-    await AsyncStorage.setItem(PRODUTOS_KEY, JSON.stringify(produtos));
-
+    await postProduto(novoProduto);
     router.back();
   }
 
@@ -56,6 +82,24 @@ const ProdutoFormScreen = () => {
         keyboardType="numeric"
       />
 
+      <View style={styles.campo}>
+        <Text style={styles.label}>Fornecedor</Text>
+        <Picker selectedValue={fornecedorId} onValueChange={setFornecedorId}>
+          {fornecedores.map((item) => (
+            <Picker.Item key={item.id} label={item.nome} value={item.id} />
+          ))}
+        </Picker>
+      </View>
+
+      <View style={styles.campo}>
+        <Text style={styles.label}>Marca</Text>
+        <Picker selectedValue={marcaId} onValueChange={setMarcaId}>
+          {marcas.map((item) => (
+            <Picker.Item key={item.id} label={item.nome} value={item.id} />
+          ))}
+        </Picker>
+      </View>
+
       <Button title="Salvar Produto" onPress={handleSubmit} />
     </View>
   );
@@ -68,5 +112,13 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     backgroundColor: Colors.background,
+  },
+  campo: {
+    marginBottom: 15,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 5,
   },
 });
