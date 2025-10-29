@@ -8,6 +8,8 @@ import { Colors } from "../constants/Colors";
 import { postProduto } from "@/src/api/produtos";
 import { getFornecedores } from "@/src/api/fornecedores";
 import { getMarcas } from "@/src/api/marcas";
+import { Fornecedor } from "@/src/types/fornecedores";
+import { Marca } from "@/src/types/marcas";
 
 const ProdutoFormScreen = () => {
   const router = useRouter();
@@ -16,8 +18,8 @@ const ProdutoFormScreen = () => {
   const [quantidadeAtual, setQuantidadeAtual] = useState("");
   const [fornecedorId, setFornecedorId] = useState("");
   const [marcaId, setMarcaId] = useState("");
-  const [fornecedores, setFornecedores] = useState([]);
-  const [marcas, setMarcas] = useState([]);
+  const [fornecedores, setFornecedores] = useState<Fornecedor[]>([]);
+  const [marcas, setMarcas] = useState<Marca[]>([]);
 
   useEffect(() => {
     carregarFornecedores();
