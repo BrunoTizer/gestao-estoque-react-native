@@ -2,10 +2,18 @@ import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { StyleSheet, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { z } from 'zod';
 import Button from "@/src/components/Button";
 import Input from "@/src/components/Input";
 import { Colors } from "@/constants/Colors";
 import { postFornecedor } from "@/src/api/fornecedores";
+
+const fornecedorSchema = z.object({
+  nome: z.string().min(1, 'Nome é obrigatório'),
+  cnpj: z.string().min(10, 'CNPJ inválido'),
+  telefone: z.string().min(10, 'Telefone inválido'),
+  email: z.string().email('Email inválido'),
+});
 
 const FornecedorFormScreen = () => {
   const router = useRouter();
@@ -57,6 +65,13 @@ const FornecedorFormScreen = () => {
 
   async function handleSubmit() {
     try {
+      fornecedorSchema.parse({
+        nome,
+        cnpj,
+        telefone,
+        email,
+      });
+
       const novoFornecedor = {
         nome,
         cnpj,
@@ -69,8 +84,13 @@ const FornecedorFormScreen = () => {
       await deletarRascunho();
       router.back();
     } catch (error) {
-      console.error("Erro ao salvar fornecedor:", error);
-      alert("Erro ao salvar fornecedor. Verifique se a API está rodando.");
+      if (error instanceof z.ZodError) {
+        console.error("Erro de validação:", error.errors[0].message);
+        alert(error.errors[0].message);
+      } else {
+        console.error("Erro ao salvar fornecedor:", error);
+        alert("Erro ao salvar fornecedor. Verifique se a API está rodando.");
+      }
     }
   }
 

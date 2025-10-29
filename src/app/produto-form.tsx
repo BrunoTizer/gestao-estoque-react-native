@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { StyleSheet, View, Text } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { z } from 'zod';
 import Button from "@/src/components/Button";
 import Input from "@/src/components/Input";
 import { Colors } from "@/constants/Colors";
@@ -11,6 +12,12 @@ import { getFornecedores } from "@/src/api/fornecedores";
 import { getMarcas } from "@/src/api/marcas";
 import { Fornecedor } from "@/src/types/fornecedores";
 import { Marca } from "@/src/types/marcas";
+
+const produtoSchema = z.object({
+  codigoProduto: z.string().min(1, 'Código é obrigatório'),
+  nomeProduto: z.string().min(1, 'Nome é obrigatório'),
+  quantidadeAtual: z.string().min(1, 'Quantidade é obrigatória'),
+});
 
 const ProdutoFormScreen = () => {
   const router = useRouter();
@@ -84,22 +91,38 @@ const ProdutoFormScreen = () => {
   }
 
   async function handleSubmit() {
-    const novoProduto = {
-      codigoProduto: codigoProduto,
-      nomeProduto: nomeProduto,
-      fornecedor: {
-        id: fornecedorId,
-      },
-      marca: {
-        id: marcaId,
-      },
-      quantidadeAtual: parseInt(quantidadeAtual),
-      ativo: true,
-    };
+    try {
+      produtoSchema.parse({
+        codigoProduto,
+        nomeProduto,
+        quantidadeAtual,
+      });
 
-    await postProduto(novoProduto);
-    await deletarRascunho();
-    router.back();
+      const novoProduto = {
+        codigoProduto: codigoProduto,
+        nomeProduto: nomeProduto,
+        fornecedor: {
+          id: fornecedorId,
+        },
+        marca: {
+          id: marcaId,
+        },
+        quantidadeAtual: parseInt(quantidadeAtual),
+        ativo: true,
+      };
+
+      await postProduto(novoProduto);
+      await deletarRascunho();
+      router.back();
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        console.error("Erro de validação:", error.errors[0].message);
+        alert(error.errors[0].message);
+      } else {
+        console.error("Erro ao salvar produto:", error);
+        alert("Erro ao salvar produto. Verifique se a API está rodando.");
+      }
+    }
   }
 
   return (

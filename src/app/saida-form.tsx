@@ -3,12 +3,17 @@ import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { z } from 'zod';
 import Button from "@/src/components/Button";
 import Input from "@/src/components/Input";
 import { Colors } from "@/constants/Colors";
 import { getProdutos } from "@/src/api/produtos";
 import { postSaida } from "@/src/api/saidas";
 import { Produto } from "@/src/types/produtos";
+
+const saidaSchema = z.object({
+  quantidade: z.string().min(1, 'Quantidade é obrigatória'),
+});
 
 const SaidaFormScreen = () => {
   const router = useRouter();
@@ -63,16 +68,30 @@ const SaidaFormScreen = () => {
   }
 
   async function handleSubmit() {
-    const novaSaida = {
-      produto: {
-        id: produtoId,
-      },
-      quantidade: parseInt(quantidade),
-    };
+    try {
+      saidaSchema.parse({
+        quantidade,
+      });
 
-    await postSaida(novaSaida);
-    await deletarRascunho();
-    router.back();
+      const novaSaida = {
+        produto: {
+          id: produtoId,
+        },
+        quantidade: parseInt(quantidade),
+      };
+
+      await postSaida(novaSaida);
+      await deletarRascunho();
+      router.back();
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        console.error("Erro de validação:", error.errors[0].message);
+        alert(error.errors[0].message);
+      } else {
+        console.error("Erro ao salvar saída:", error);
+        alert("Erro ao salvar saída. Verifique se a API está rodando.");
+      }
+    }
   }
 
   return (

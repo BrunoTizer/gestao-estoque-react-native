@@ -2,10 +2,15 @@ import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { StyleSheet, Switch, Text, View } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { z } from 'zod';
 import Button from "@/src/components/Button";
 import Input from "@/src/components/Input";
 import { Colors } from "@/constants/Colors";
 import { postMarca } from "@/src/api/marcas";
+
+const marcaSchema = z.object({
+  nome: z.string().min(1, 'Nome é obrigatório'),
+});
 
 const MarcaFormScreen = () => {
   const [nome, setNome] = useState("");
@@ -50,12 +55,11 @@ const MarcaFormScreen = () => {
   }
 
   const handleSubmit = async () => {
-    if (!nome.trim()) {
-      alert("Por favor, preencha o nome da marca");
-      return;
-    }
-
     try {
+      marcaSchema.parse({
+        nome,
+      });
+
       const novaMarca = {
         nome,
         ativo,
@@ -66,8 +70,13 @@ const MarcaFormScreen = () => {
       alert("Marca cadastrada com sucesso!");
       router.back();
     } catch (error) {
-      console.error("Erro ao salvar marca:", error);
-      alert("Erro ao salvar marca. Verifique se a API está rodando.");
+      if (error instanceof z.ZodError) {
+        console.error("Erro de validação:", error.errors[0].message);
+        alert(error.errors[0].message);
+      } else {
+        console.error("Erro ao salvar marca:", error);
+        alert("Erro ao salvar marca. Verifique se a API está rodando.");
+      }
     }
   };
 
